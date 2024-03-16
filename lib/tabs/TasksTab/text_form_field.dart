@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
 class TextFormFieldItem extends StatelessWidget {
@@ -21,11 +20,11 @@ class TextFormFieldItem extends StatelessWidget {
           ),
           label: Text(
             text,
-            style: GoogleFonts.inter(
-                textStyle: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xffa9a9a99c))),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+              color: Color(0xffa9a9a99c),
+            ),
           ),
         ));
   }

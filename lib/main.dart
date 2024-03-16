@@ -1,13 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/firebase_options.dart';
+import 'package:todo_app/l10n/generated/l10n.dart';
 import 'package:todo_app/myProvider/settings_provider.dart';
 import 'package:todo_app/myProvider/tasks_provider.dart';
 import 'package:todo_app/my_theme.dart';
 import 'package:todo_app/screens/home_screen.dart';
 import 'package:todo_app/screens/splash_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ void main() async {
         create: (context) => SettingsProvider(),
       ),
       ChangeNotifierProvider(
-        create: (context) => TasksProvider()..getTasks(),
+        create: (context) => TasksProvider()..getTasksByDate(),
       ),
     ], child: const MyApp()),
   );
@@ -42,8 +43,13 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightmode,
       darkTheme: AppTheme.darkmode,
       themeMode: provider.themeMode,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.delegate.supportedLocales,
       locale: Locale(provider.language),
     );
   }

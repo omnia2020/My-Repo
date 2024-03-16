@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/tabs/TasksTab/add_task_bottom_sheet.dart';
 import 'package:todo_app/tabs/TasksTab/tasks_tab.dart';
 import 'package:todo_app/tabs/setting_tab/settings_tab.dart';
@@ -18,12 +17,11 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 100,
         backgroundColor: const Color(0xff5D9CEC),
-        title: Text(index == 0 ? "To Do List" : "Settings",
-            style: GoogleFonts.poppins(
-                textStyle: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white))),
+        title: Text(
+          index == 0 ? "To Do List" : "Settings",
+          style: const TextStyle(
+              fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white),
+        ),
       ),
       bottomNavigationBar: Stack(children: [
         BottomAppBar(

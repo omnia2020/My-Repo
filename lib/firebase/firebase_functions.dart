@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/model/tasks_model.dart';
@@ -16,11 +18,13 @@ class FirebaseFunctions {
     );
   }
 
-  static Future<void> addTask(TasksModel model) {
+  static Future<List<TasksModel>> addTask(TasksModel model) {
     var collection = getTaskCollection();
     var docRef = collection.doc();
     model.id = docRef.id;
-    return docRef.set(model);
+    return collection.doc(model.id).set(model).then((value) {
+      return getTask(model.date);
+    });
   }
 
   static Future<List<TasksModel>> getTask(DateTime date) async {
@@ -30,7 +34,8 @@ class FirebaseFunctions {
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  static Future<void> deleteTask(String id) {
-    return getTaskCollection().doc(id).delete();
+  static Future<void> deleteTask(String id) async {
+    log("deleteTask: $id");
+    await getTaskCollection().doc(id).delete();
   }
 }

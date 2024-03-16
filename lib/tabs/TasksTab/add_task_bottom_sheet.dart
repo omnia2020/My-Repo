@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/firebase/firebase_functions.dart';
+import 'package:todo_app/myProvider/tasks_provider.dart';
 import 'package:todo_app/tabs/TasksTab/text_form_field.dart';
 import 'package:todo_app/model/tasks_model.dart';
 
@@ -27,11 +28,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         children: [
           Text(
             "Add new Task",
-            style: GoogleFonts.poppins(
-              textStyle: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(
@@ -51,11 +50,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             alignment: Alignment.centerLeft,
             child: Text(
               "Select time",
-              style: GoogleFonts.inter(
-                  textStyle: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF383838))),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF383838)),
             ),
           ),
           const SizedBox(
@@ -67,39 +65,58 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             },
             child: Text(
               chossenDate.toString().substring(0, 10),
-              style: GoogleFonts.inter(
-                  textStyle: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                      // ignore: use_full_hex_values_for_flutter_colors
-                      color: Color(0xffa9a9a99c))),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                // ignore: use_full_hex_values_for_flutter_colors
+                color: Color(0xffa9a9a99c),
+              ),
             ),
           ),
           const SizedBox(
             height: 30,
           ),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff5D9CEC)),
-                onPressed: addTask,
-                // TasksModel model = TasksModel(
-                //     description: descriptionController.text,
-                //     date: chossenDate.microsecondsSinceEpoch,
-                //     title: titelController.text);
-                // FirebaseFunctions.addTask(model)
-                //     .then((value) => Navigator.pop(context));
-                // setState(() {});
-                child: Text(
-                  "Add Task",
-                  style: GoogleFonts.inter(
-                      textStyle: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white)),
-                )),
-          )
+          Consumer<TasksProvider>(builder: (_, taskState, __) {
+            return SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff5D9CEC)),
+                  onPressed: () async {
+                    await taskState.addTask(TasksModel(
+                        description: descriptionController.text,
+                        date: DateUtils.dateOnly(chossenDate),
+                        title: titelController.text));
+                    Navigator.pop(context);
+                    // FirebaseFunctions.addTask(TasksModel(
+                    //         description: descriptionController.text,
+                    //         date: DateUtils.dateOnly(chossenDate),
+                    //         title: titelController.text))
+                    //     .then((value) {
+                    //   setState(() {});
+                    //   Navigator.pop(context);
+                    // }).catchError((_) {
+                    //   print("SomeThing Wrong");
+                    // });
+                    // Navigator.of(context).pop();
+                    // setState(() {});
+                  },
+                  // TasksModel model = TasksModel(
+                  //     description: descriptionController.text,
+                  //     date: chossenDate.microsecondsSinceEpoch,
+                  //     title: titelController.text);
+                  // FirebaseFunctions.addTask(model)
+                  //     .then((value) => Navigator.pop(context));
+                  // setState(() {});
+                  child: Text(
+                    "Add Task",
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),
+                  )),
+            );
+          }),
         ],
       ),
     );
@@ -118,13 +135,15 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
     }
   }
 
-  addTask() {
+  addTaskToFirestore() {
     FirebaseFunctions.addTask(TasksModel(
             description: descriptionController.text,
             date: DateUtils.dateOnly(chossenDate),
             title: titelController.text))
-        .then((value) => Navigator.pop(context))
-        .catchError((_) {
+        .then((value) {
+      setState(() {});
+      Navigator.pop(context);
+    }).catchError((_) {
       print("SomeThing Wrong");
     });
     Navigator.of(context).pop();
